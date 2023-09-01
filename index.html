@@ -1,34 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="path/to/xterm.css" />
-    <script src="path/to/xterm.js"></script>
-    <script src="path/to/addon/attach.js"></script> <!-- if you're using the attach addon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css" />
+    <script src="https://cdn.jsdelivr.net/npm/xterm/lib/xterm.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@xtermjs/addon-attach/lib/attach.js"></script>
+
 
     <title>Car Performance Data Tool</title>
     <style>
-        body {font-family: Arial;}
-        
+        body {
+            font-family: Arial;
+        }
+
         #terminal {
-         width: 750px;
-         height: 450px;
-         border: 1px solid #ccc;
-         color: black;
-         
+            width: 750px;
+            height: 450px;
+            border: 1px solid #ccc;
+            color: black;
+
         }
 
         .xterm {
-            font-feature-settings: "liga" 0;
+            font-feature-settings: "liga"0;
             position: relative;
             user-select: none;
             -ms-user-select: none;
             -webkit-user-select: none;
         }
 
-        .xterm.focus, .xterm:focus {outline: none;}
-        .xterm .xterm-helpers {position: absolute; top: 0; z-index: 5;}
+        .xterm.focus,
+        .xterm:focus {
+            outline: none;
+        }
+
+        .xterm .xterm-helpers {
+            position: absolute;
+            top: 0;
+            z-index: 5;
+        }
+
         .xterm .xterm-helper-textarea {
             padding: 0;
             border: 0;
@@ -44,19 +57,43 @@
             overflow: hidden;
             resize: none;
         }
+
         .xterm .xterm-viewport {
             overflow-y: scroll;
             cursor: default;
             position: absolute;
-            right: 0; left: 0; top: 0; bottom: 0;
+            right: 0;
+            left: 0;
+            top: 0;
+            bottom: 0;
             width: 730px;
         }
-        .xterm .xterm-screen {position: relative;}
-        .xterm .xterm-screen canvas {position: absolute; left: 0; top: 0;}
-        .xterm {cursor: text;}
-        .xterm.enable-mouse-events {cursor: default;}
-        .xterm.xterm-cursor-pointer {cursor: pointer;}
-        .xterm.column-select.focus {cursor: crosshair;}
+
+        .xterm .xterm-screen {
+            position: relative;
+        }
+
+        .xterm .xterm-screen canvas {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .xterm {
+            cursor: text;
+        }
+
+        .xterm.enable-mouse-events {
+            cursor: default;
+        }
+
+        .xterm.xterm-cursor-pointer {
+            cursor: pointer;
+        }
+
+        .xterm.column-select.focus {
+            cursor: crosshair;
+        }
 
         button {
             width: 200px;
@@ -69,12 +106,32 @@
             border-radius: 8px;
         }
 
-        [data-tts-block-id].tts-active {background: rgba(206, 225, 255, 0.9) !important;}
-        [data-tts-sentence-id].tts-active {background: rgba(0, 89, 191, 0.7) !important;}
+        [data-tts-block-id].tts-active {
+            background: rgba(206, 225, 255, 0.9) !important;
+        }
+
+        [data-tts-sentence-id].tts-active {
+            background: rgba(0, 89, 191, 0.7) !important;
+        }
     </style>
 </head>
+
 <body>
     <button onclick="window.location.reload()">Run Program</button>
+
+    <select id="searchType">
+        <option value="make">Search by Car Make</option>
+        <option value="model">Search by Car Model</option>
+        <option value="year">Search by Car Year</option>
+        <option value="engine">Search by Engine Size</option>
+        <option value="power">Search by Power</option>
+        <option value="torque">Search by Torque</option>
+        <option value="MPH">search by MPH</option>
+        <option value="price">search by Price</option>
+    </select>
+
+    <input type="text" id="searchValue">
+    <button onclick="fetchData()">Search</button>
 
     <div id="terminal">
         <div dir="ltr" class="terminal xterm enable-mouse-events" tabindex="0">
@@ -83,9 +140,11 @@
             </div>
             <div class="xterm-screen">
                 <div class="xterm-helpers">
-                    <textarea class="xterm-helper-textarea" aria-label="Terminal input" aria-multiline="false" autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0"></textarea>
+                    <textarea class="xterm-helper-textarea" aria-label="Terminal input" aria-multiline="false"
+                        autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0"></textarea>
                     <div class="composition-view"></div>
-                    <span class="xterm-char-measure-element" aria-hidden="true" style="font-family: courier-new, courier, monospace; font-size: 15px;">W</span>
+                    <span class="xterm-char-measure-element" aria-hidden="true"
+                        style="font-family: courier-new, courier, monospace; font-size: 15px;">W</span>
                 </div>
                 <canvas class="xterm-text-layer"></canvas>
                 <canvas class="xterm-selection-layer"></canvas>
@@ -96,18 +155,114 @@
     </div>
 
     <script>
-        var term = new Terminal({cols: 80, rows: 24});
-        term.open(document.getElementById('terminal'));
-        term.writeln('Running startup command: python3 run.py');
-        term.writeln('');
-        var ws = new WebSocket(location.protocol.replace('http', 'ws') + '//' + location.hostname + (location.port ? (':' + location.port) : '/') + '/');
-        ws.onopen = function() {
-            term.attach(ws);
-        };
-        ws.onerror = function(e) {
-            console.log(e);
-        };
-        document.getElementsByClassName("xterm-helper-textarea")[0].focus();
+        var term = new Terminal({
+    cols: 80,
+    rows: 24
+});
+term.open(document.getElementById('terminal'));
+document.getElementsByClassName("xterm-helper-textarea")[0].focus();
+
+let state = "MAIN_MENU";
+let criteria = null;
+
+function mainMenu() {
+    term.writeln("\nCar Performance Data Tool\n");
+    term.writeln("Please select an option from the menu below:\n");
+    term.writeln("A: Search by Car Make");
+    term.writeln("B: Search by Car Model");
+    term.writeln("C: Search by Car Year");
+    term.writeln("D: Search by Car Engine Size");
+    term.writeln("E: Search by Car Horsepower");
+    term.writeln("F: Search by Car Torque");
+    term.writeln("G: Search by 0-60 MPH Time");
+    term.writeln("H: Search by Price Range");
+    term.writeln("I: View All Data");
+    term.writeln("Q: Quit");
+    term.write("\nEnter your choice: ");
+}
+
+term.onKey(({ key, domEvent }) => {
+    const printable = !domEvent.altKey && !domEvent.altGraphKey && !domEvent.ctrlKey && !domEvent.metaKey;
+    if (domEvent.keyCode === 13) {  // Enter key
+        handleInput(term._core._inputService._textarea.value);
+        term._core._inputService._textarea.value = '';  // clear input
+    } else if (printable) {
+        term.write(key);
+    }
+});
+
+function handleInput(input) {
+    switch(state) {
+        case "MAIN_MENU":
+            handleMainMenu(input);
+            break;
+        case "CRITERIA_INPUT":
+            handleCriteriaInput(input);
+            break;
+        default:
+            mainMenu();
+            break;
+    }
+}
+
+function handleMainMenu(input) {
+    let choice = input.toUpperCase();
+    switch (choice) {
+        case 'A':
+            criteria = "Car Make";
+            break;
+        case 'B':
+            criteria = "Car Model";
+            break;
+        case 'C':
+            criteria = "Car Year";
+            break;
+        // ... Handle other choices similarly
+
+        case 'Q':
+            term.writeln("\nGoodbye!");
+            return;
+
+        default:
+            term.writeln("\nInvalid choice. Try again.");
+            mainMenu();
+            return;
+    }
+    state = "CRITERIA_INPUT";
+    term.writeln(`\nEnter ${criteria} to search: `);
+}
+
+function handleCriteriaInput(input) {
+    // Fetch data using input and criteria
+    fetchData(criteria, input);
+}
+
+function fetchData(criteria, value) {
+    // Post search request
+    fetch('/search', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ criteria: criteria, value: value })
+    })
+    .then(response => response.json())
+    .then(data => {
+        term.writeln('Search results:');
+        data.forEach(car => {
+            term.writeln(JSON.stringify(car));
+        });
+        mainMenu();
+    })
+    .catch((error) => {
+        term.writeln('Error fetching data.');
+        mainMenu();
+    });
+}
+
+mainMenu();  // Start with the main menu
+
     </script>
 </body>
+
 </html>

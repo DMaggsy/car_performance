@@ -19,6 +19,39 @@ data = performance.get_all_values()
 
 print(data)
 
+from flask import Flask, jsonify, request
+import gspread
+from google.oauth2.service_account import Credentials
+
+app = Flask(__name__)
+
+# Setup gspread
+SCOPE = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
+CREDS = Credentials.from_service_account_file('creds.json')
+SCOPED_CREDS = CREDS.with_scopes(SCOPE)
+GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
+SHEET = GSPREAD_CLIENT.open('car_performance')
+performance = SHEET.worksheet('cars')
+
+@app.route('/')
+def index():
+    return render_template("index.html")
+
+@app.route('/search', methods=['POST'])
+def search():
+    criteria = request.json.get('criteria')
+    value = request.json.get('value').upper()
+    all_data = performance.get_all_records()
+
+    results = [row for row in all_data if str(row[criteria]).upper() == value]
+    return jsonify(results)
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
+
+
 SEARCH_PROMPT = "Searching for "
 
 
