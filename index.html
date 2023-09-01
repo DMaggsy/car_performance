@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css" />
     <script src="https://cdn.jsdelivr.net/npm/xterm/lib/xterm.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@xtermjs/addon-attach/lib/attach.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm-addon-attach@0.8.0/lib/xterm-addon-attach.js"></script>
+    <script src="script.js"></script>
 
 
     <title>Car Performance Data Tool</title>
@@ -119,21 +120,7 @@
 <body>
     <button onclick="window.location.reload()">Run Program</button>
 
-    <select id="searchType">
-        <option value="make">Search by Car Make</option>
-        <option value="model">Search by Car Model</option>
-        <option value="year">Search by Car Year</option>
-        <option value="engine">Search by Engine Size</option>
-        <option value="power">Search by Power</option>
-        <option value="torque">Search by Torque</option>
-        <option value="MPH">search by MPH</option>
-        <option value="price">search by Price</option>
-    </select>
-
-    <input type="text" id="searchValue">
-    <button onclick="fetchData()">Search</button>
-
-    <div id="terminal">
+    <div id="terminal"></div>
         <div dir="ltr" class="terminal xterm enable-mouse-events" tabindex="0">
             <div class="xterm-viewport">
                 <div class="xterm-scroll-area"></div>
@@ -152,7 +139,7 @@
                 <canvas class="xterm-cursor-layer"></canvas>
             </div>
         </div>
-    </div>
+    
 
     <script>
         var term = new Terminal({
@@ -181,15 +168,20 @@ function mainMenu() {
     term.write("\nEnter your choice: ");
 }
 
+let inputBuffer = '';
+
 term.onKey(({ key, domEvent }) => {
     const printable = !domEvent.altKey && !domEvent.altGraphKey && !domEvent.ctrlKey && !domEvent.metaKey;
+    
     if (domEvent.keyCode === 13) {  // Enter key
-        handleInput(term._core._inputService._textarea.value);
-        term._core._inputService._textarea.value = '';  // clear input
+        handleInput(inputBuffer);
+        inputBuffer = '';  // clear input
     } else if (printable) {
         term.write(key);
+        inputBuffer += key;  // accumulate the key into our buffer
     }
 });
+
 
 function handleInput(input) {
     switch(state) {

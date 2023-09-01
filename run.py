@@ -151,28 +151,31 @@ def main_menu():
         print("I: View All Data")
         print("Q: Quit")
 
-choice = input("Enter your choice: ").upper()
+        choice = input("Enter your choice: ").upper()
 
-if choice == 'A':
-    search_by_make()
-elif choice == 'B':
-    search_by_model()
-elif choice == 'C':
-    search_by_year()
-elif choice == 'D':
-    search_by_engine_size()
-elif choice == 'E':
-    search_by_horsepower()
-elif choice == 'F':
-    search_by_torque()
-elif choice == 'G':
-    search_by_0_60_mph_time()
-elif choice == 'H':
-    search_by_price_range()
-elif choice == 'I':
-    search_by_all_data()
-elif choice =='Q':
-    print("Thank you for using the Car Performance Data Tool. Goodbye.")
-else:
-    print("Invalid choice. Please try again.")
-    
+        if choice == "A":
+            search_by_make()
+        elif choice == "B":
+            search_by_model()
+        elif choice == "C":
+            search_by_year()
+        elif choice == "D":
+            search_by_engine_size()
+        elif choice == "E":
+            search_by_horsepower()
+        elif choice == "F":
+            search_by_torque()
+        elif choice == "G":
+            search_by_0_60_mph_time()
+        elif choice == "H":
+            search_by_price_range()
+        elif choice == "I":
+            search_by_all_data()
+        elif choice == "Q":
+            print("Thank you for using the Car Performance Data Tool. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main_menu()
