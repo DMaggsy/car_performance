@@ -39,7 +39,24 @@ function processInput(input) {
         case 'B':
             // Handle search by Car Model
             break;
-        // ... and so on for the other options
+        case 'C':
+            // Handle search by Car Year
+            break;
+        case 'D':
+            // Handle search by Engine Size
+            break;
+        case 'E':
+            // Handle search by Horsepower
+            break;
+        case 'F':
+            // Handle search by Torque
+            break;
+        case 'G':
+            // Handle search by 0-60
+            break;
+        case 'H':
+            // Handle search by Price
+
         default:
             term.writeln('Invalid option. Please try again.');
     }
