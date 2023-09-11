@@ -56,6 +56,13 @@ function processInput(input) {
             break;
         case 'H':
             // Handle search by Price
+            break;
+        case 'I':
+            // Handle search by All Data
+            break;
+        case 'Q':
+            // Handle quit
+            break;
 
         default:
             term.writeln('Invalid option. Please try again.');
