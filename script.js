@@ -6,14 +6,32 @@ document.addEventListener("DOMContentLoaded", function(event) {
     term.open(document.getElementById('terminal'));
     document.getElementsByClassName("xterm-helper-textarea")[0].focus();
 
-function fetchData(searchType, searchValue) {
-    fetch('/search?criteria=' + searchType + '&value=' + searchValue)
-    .then(response => response.json())
-    .then(data => {
-        // Display data in the terminal or elsewhere
-        term.writeln(JSON.stringify(data));
-    });
-}
+    function fetchData(searchType, searchValue) {
+        fetch('/search', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ criteria: searchType, value: searchValue })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    term.writeln('Server Response: ' + text);
+                    throw new Error(text);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Display data in the terminal or elsewhere
+            term.writeln(JSON.stringify(data));
+        })
+        .catch((error) => {
+            term.writeln('Error fetching data: ' + error.message);
+        });
+    }
+    
 
 term.onKey(e => {
     const ev = e.domEvent;

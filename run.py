@@ -26,12 +26,17 @@ def index():
 
 @app.route('/search', methods=['POST'])
 def search():
-    criteria = request.json.get('criteria')
-    value = request.json.get('value').upper()
-    all_data = performance.get_all_records()
+    try:
+        criteria = request.json.get('criteria')
+        value = request.json.get('value').upper()
+        all_data = performance.get_all_records()
+        results = [row for row in all_data if str(row[criteria]).upper() == value]
+        return jsonify(results)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-    results = [row for row in all_data if str(row[criteria]).upper() == value]
-    return jsonify(results)
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
