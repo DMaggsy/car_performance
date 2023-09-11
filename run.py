@@ -1,9 +1,11 @@
 from flask import Flask, jsonify, request, render_template
 import gspread
 from google.oauth2.service_account import Credentials
+from flask_cors import CORS  # Importing CORS
 
 # Setting up the app
 app = Flask(__name__)
+CORS(app)  # Allowing all origins
 
 # Initialize gspread
 SCOPE = [
