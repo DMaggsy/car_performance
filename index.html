@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css" />
     <script src="https://cdn.jsdelivr.net/npm/xterm/lib/xterm.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xterm-addon-attach@0.8.0/lib/xterm-addon-attach.js"></script>
-    <script src="script.js"></script>
 
 
     <title>Car Performance Data Tool</title>
@@ -231,7 +230,7 @@ function handleCriteriaInput(input) {
 
 function fetchData(criteria, value) {
     // Post search request
-    fetch('/search', {
+    fetch('http://127.0.0.1:5000/search', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
