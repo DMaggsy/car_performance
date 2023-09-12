@@ -20,28 +20,6 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('car_performance')
 performance = SHEET.worksheet('cars')
 
-@app.route('/')
-def index():
-    return render_template("index.html")
-
-@app.route('/search', methods=['POST'])
-def search():
-    try:
-        criteria = request.json.get('criteria')
-        value = request.json.get('value').upper()
-        all_data = performance.get_all_records()
-        results = [row for row in all_data if str(row[criteria]).upper() == value]
-        return jsonify(results)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
-
-
 
 
 
