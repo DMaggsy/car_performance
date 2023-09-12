@@ -96,6 +96,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 term.writeln('Please enter Price:');
                 searchMode = 'price';
                 break;
+            case 'I':
+                // Handle search by All Data
+                break;
+            case 'Q':
+                // Handle quit
+                break;
+
             default:
                 term.writeln('Invalid option. Please try again.');
                 currentInput = ''; // Clear the input
