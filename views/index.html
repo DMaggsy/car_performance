@@ -1,6 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css" />
+    <script src="https://cdn.jsdelivr.net/npm/xterm/lib/xterm.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm-addon-attach@0.8.0/lib/xterm-addon-attach.js"></script>
+
+
+    <title>Car Performance Data Tool</title>
+    <style>
+        body {
+            font-family: Arial;
+        }
+
+        #terminal {
+            width: 750px;
+            height: 450px;
+            border: 1px solid #ccc;
+            color: black;
+
+        }
+
+        .xterm {
+            font-feature-settings: "liga"0;
+            position: relative;
+            user-select: none;
+            -ms-user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .xterm.focus,
+        .xterm:focus {
+            outline: none;
+        }
+
+        .xterm .xterm-helpers {
+            position: absolute;
+            top: 0;
+            z-index: 5;
+        }
+
+        .xterm .xterm-helper-textarea {
+            padding: 0;
+            border: 0;
+            margin: 0;
+            position: absolute;
+            opacity: 0;
+            left: -9999em;
+            top: 0;
+            width: 0;
+            height: 0;
+            z-index: -5;
+            white-space: nowrap;
+            overflow: hidden;
+            resize: none;
+        }
+
+        .xterm .xterm-viewport {
+            overflow-y: scroll;
+            cursor: default;
+            position: absolute;
+            right: 0;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 730px;
+        }
+
+        .xterm .xterm-screen {
+            position: relative;
+        }
+
+        .xterm .xterm-screen canvas {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .xterm {
+            cursor: text;
+        }
+
+        .xterm.enable-mouse-events {
+            cursor: default;
+        }
+
+        .xterm.xterm-cursor-pointer {
+            cursor: pointer;
+        }
+
+        .xterm.column-select.focus {
+            cursor: crosshair;
+        }
+
+        button {
+            width: 200px;
+            height: 40px;
+            background-color: #E84610;
+            border: 1px solid grey;
+            color: white;
+            text-transform: uppercase;
+            margin: 10px;
+            border-radius: 8px;
+        }
+
+        [data-tts-block-id].tts-active {
+            background: rgba(206, 225, 255, 0.9) !important;
+        }
+
+        [data-tts-sentence-id].tts-active {
+            background: rgba(0, 89, 191, 0.7) !important;
+        }
+    </style>
+</head>
+
 <body>
     <button onclick="window.location.reload()">Run Program</button>
+
     <div id="terminal"></div>
+    <div dir="ltr" class="terminal xterm enable-mouse-events" tabindex="0">
+        <div class="xterm-viewport">
+            <div class="xterm-scroll-area"></div>
+        </div>
+        <div class="xterm-screen">
+            <div class="xterm-helpers">
+                <textarea class="xterm-helper-textarea" aria-label="Terminal input" aria-multiline="false"
+                    autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0"></textarea>
+                <div class="composition-view"></div>
+                <span class="xterm-char-measure-element" aria-hidden="true"
+                    style="font-family: courier-new, courier, monospace; font-size: 15px;">W</span>
+            </div>
+            <canvas class="xterm-text-layer"></canvas>
+            <canvas class="xterm-selection-layer"></canvas>
+            <canvas class="xterm-link-layer"></canvas>
+            <canvas class="xterm-cursor-layer"></canvas>
+        </div>
+    </div>
+
 
     <script>
         var term = new Terminal({
@@ -24,4 +162,4 @@
         // Set focus in the terminal
         document.getElementsByClassName("xterm-helper-textarea")[0].focus();
     </script>
-</body>
+        </body>
